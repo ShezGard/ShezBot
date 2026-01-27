@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShezGard Bot</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1><i class="fas fa-terminal me-2"></i>SHEZGARD BOT</h1>
+            <p>AI-ассистент для генерации эпиков и анализа данных</p>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            <div class="message message-ai">
+                <div class="message-content">
+                    <div class="welcome-message">
+                        <i class="fas fa-robot"></i>
+                        <strong>👋 Привет! Я ShezGard Bot</strong>
+                        <p class="welcome-text">Я помогу тебе создать структурированный эпик по шаблону.</p>
+                        <strong class="welcome-title">Просто опиши:</strong>
+                        <ul class="welcome-list">
+                            <li>Проблему, которую нужно решить</li>
+                            <li>Функционал, который нужно добавить</li>
+                            <li>Требования к системе</li>
+                        </ul>
+                        <p class="welcome-text" style="margin-bottom: 0;">Я сгенерирую готовый эпик с разделами: Вводная, Цели, User Story, MVP и т.д.</p>
+                    </div>
+                </div>
+                <div class="message-time">Сейчас</div>
+            </div>
+        </div>
+        
+        <div class="chat-input">
+            <div class="input-group">
+                <textarea id="user-input" class="form-control" placeholder="Напиши задачу или проблему..." rows="1"></textarea>
+                <button id="send-btn" class="btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+            <small class="text-muted mt-2 d-block" id="hint-text">
+                <i class="fas fa-info-circle me-1"></i>
+                Нажми Enter для отправки. Максимум 2000 символов.
+            </small>
+        </div>
+    </div>
+    
+    <!-- Секция анализа данных -->
+    <div class="data-analysis-section mt-4 pt-4 border-top" style="border-color: var(--border-color);">
+        <h3 class="mb-3" style="color: var(--accent-color);">
+            <i class="fas fa-chart-line me-2"></i>Анализ данных из CSV/XLSX
+        </h3>
+        <p class="text-muted mb-3" style="color: var(--text-secondary);">
+            Загрузи файл с метриками (обращения ТП, ошибки, логи) — получи анализ и рекомендации
+        </p>
+        
+        <div class="card bg-dark border-secondary">
+            <div class="card-body">
+                <div class="upload-area" id="upload-area" style="border: 2px dashed var(--border-color); border-radius: 12px; padding: 2rem; text-align: center; cursor: pointer; transition: all 0.3s;">
+                    <i class="fas fa-file-csv fa-3x mb-3" style="color: var(--accent-color);"></i>
+                    <h5 class="mb-2">Перетащи файл сюда или кликни</h5>
+                    <p class="text-muted mb-0" style="color: var(--text-secondary);">
+                        Поддерживаются: .csv, .xlsx, .xls (макс. 100 МБ)
+                    </p>
+                    <input type="file" id="file-input" accept=".csv,.xlsx,.xls" style="display: none;">
+                </div>
+                
+                <div id="upload-progress" class="mt-3" style="display: none;">
+                    <div class="progress" style="height: 6px; background-color: var(--bg-secondary);">
+                        <div class="progress-bar" role="progressbar" style="width: 0%; background: linear-gradient(90deg, var(--accent-color), #5a4ae9);"></div>
+                    </div>
+                    <small class="text-muted mt-2 d-block" style="color: var(--text-secondary);">
+                        Загрузка и анализ файла...
+                    </small>
+                </div>
+                
+                <div id="analysis-result" class="mt-4" style="display: none;">
+                    <div class="alert alert-info bg-dark border-info text-white">
+                        <i class="fas fa-spinner fa-spin me-2"></i>
+                        <strong>Анализ данных...</strong> Пожалуйста, подождите.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="toast align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true" id="toast">
+        <div class="d-flex">
+            <div class="toast-body" id="toast-message">
+                <i class="fas fa-check-circle me-2"></i>Текст скопирован!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
