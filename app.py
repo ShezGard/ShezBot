@@ -524,15 +524,19 @@ if __name__ == "__main__":
     print("\n" + "=" * 60)
     print("🤖 ShezGard Bot — Веб-интерфейс")
     print("=" * 60)
-    print(f"📍 Открой в браузере: http://localhost:5000")
+    print(f"📍 Локальный адрес: http://localhost:5000")
     print(f"🧠 Модель: {ai_client.model}")
     print(f"📊 Поддержка вложенных тематик: ВКЛЮЧЕНА")
     print(f"📦 Макс. размер файла: 100 МБ")
     print("🛑 Для остановки нажми Ctrl+C")
     print("=" * 60 + "\n")
     
+    # Используем порт из переменной окружения (обязательно для Render)
+    port = int(os.environ.get('PORT', 5000))
+    
     try:
-        app.run(host="127.0.0.1", port=5000, debug=False)
+        # ВАЖНО: host='0.0.0.0' для доступа извне + порт из окружения
+        app.run(host='0.0.0.0', port=port, debug=False)
     except KeyboardInterrupt:
         print("\n🛑 Останавливаю сервер...")
     finally:
