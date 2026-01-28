@@ -34,7 +34,7 @@ class AIClient:
                     ],
                     "temperature": config.AI_TEMPERATURE,
                     "max_tokens": config.AI_MAX_TOKENS_EPIC,
-                    "stop": ["\n\n##", "## 10.", "Пример:", "Вот эпик:"],
+                    "stop": ["\n\n## 11", "## 11.", "Вот эпик:", "На основе описания:"],
                     "reasoning": {"enabled": True},
                 },
             )
