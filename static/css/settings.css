@@ -1,0 +1,25 @@
+/* ==================== Стили для настроек ==================== */
+#settings .form-label {
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+#settings .form-select, #settings .form-range {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+#settings .btn-success {
+    background: linear-gradient(135deg, var(--success), #49a908);
+    border: none;
+    padding: 0.8rem 2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+#settings .btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(82, 196, 26, 0.4);
+}

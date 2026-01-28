@@ -3,9 +3,18 @@ from flask_cors import CORS
 import pandas as pd
 from config import config
 from ai_client import AIClient
-from data_analyzer import analyze_csv, format_data_summary
+from data_analyzer import (
+    analyze_csv, 
+    format_data_summary, 
+    compare_periods, 
+)
 from utils import get_startup_message, validate_description, validate_file_size, logger
-from prompts import SYSTEM_PROMPT_EPIC, SYSTEM_PROMPT_ANALYSIS
+from prompts import (
+    SYSTEM_PROMPT_EPIC, 
+    SYSTEM_PROMPT_ANALYSIS, 
+    SYSTEM_PROMPT_COMPARISON,
+    SYSTEM_PROMPT_PRESENTATION
+)
 
 # Инициализация приложения
 app = Flask(__name__)
@@ -26,8 +35,7 @@ def index():
 def generate_epic():
     """Генерация эпика по описанию"""
     data = request.get_json()
-    
-    if not data or "description" not in data:  # ← ИСПРАВЛЕНО: добавлено "data" после "not in"
+    if not data or "description" not in data:
         return jsonify({"error": "Отсутствует поле 'description'"}), 400
     
     description = data["description"].strip()
@@ -109,6 +117,149 @@ def upload_file():
         logger.exception(f"❌ Ошибка при загрузке файла: {e}")
         return jsonify({"error": f"Ошибка обработки файла: {str(e)}"}), 500
 
+@app.route("/api/compare", methods=["POST"])
+def compare_periods_api():
+    """Сравнение двух периодов"""
+    try:
+        if 'file1' not in request.files or 'file2' not in request.files:
+            return jsonify({"error": "Необходимо загрузить 2 файла"}), 400
+        
+        file1 = request.files['file1']
+        file2 = request.files['file2']
+        
+        if file1.filename == '' or file2.filename == '':
+            return jsonify({"error": "Имена файлов не должны быть пустыми"}), 400
+        
+        # Проверка расширений
+        allowed_extensions = {'csv', 'xlsx', 'xls'}
+        filename1 = file1.filename.lower()
+        filename2 = file2.filename.lower()
+        
+        if not any(filename1.endswith(f'.{ext}') for ext in allowed_extensions):
+            return jsonify({"error": f"Неподдерживаемый формат файла 1. Разрешены: .csv, .xlsx, .xls"}), 400
+        
+        if not any(filename2.endswith(f'.{ext}') for ext in allowed_extensions):
+            return jsonify({"error": f"Неподдерживаемый формат файла 2. Разрешены: .csv, .xlsx, .xls"}), 400
+        
+        # Чтение файлов
+        logger.info(f"📥 Загрузка файла 1: {file1.filename}")
+        logger.info(f"📥 Загрузка файла 2: {file2.filename}")
+        
+        if filename1.endswith('.csv'):
+            df1 = pd.read_csv(file1)
+        else:
+            df1 = pd.read_excel(file1)
+        
+        if filename2.endswith('.csv'):
+            df2 = pd.read_csv(file2)
+        else:
+            df2 = pd.read_excel(file2)
+        
+        logger.info(f"✅ Загружено файл 1: {len(df1)} строк, {len(df1.columns)} колонок")
+        logger.info(f"✅ Загружено файл 2: {len(df2)} строк, {len(df2.columns)} колонок")
+        
+        # Анализ каждого файла
+        analysis1 = analyze_csv(df1)
+        analysis2 = analyze_csv(df2)
+        
+        # Сравнение периодов
+        comparison = compare_periods(analysis1, analysis2)
+        
+        # Формируем сводку для AI
+        comparison_summary = format_comparison_summary(comparison, analysis1, analysis2)
+        
+        # Запрос к AI для интерпретации сравнения
+        ai_comparison = ai_client.analyze_data(comparison_summary, SYSTEM_PROMPT_COMPARISON)
+        
+        return jsonify({
+            "success": True,
+            "comparison": comparison,
+            "analysis1": analysis1,
+            "analysis2": analysis2,
+            "ai_comparison": ai_comparison,
+            "filename1": file1.filename,
+            "filename2": file2.filename
+        })
+        
+    except Exception as e:
+        logger.exception(f"❌ Ошибка при сравнении периодов: {e}")
+        return jsonify({"error": f"Ошибка обработки файлов: {str(e)}"}), 500
+
+@app.route("/api/presentation", methods=["POST"])
+def generate_presentation():
+    """Генерация презентации на основе эпика"""
+    data = request.get_json()
+    if not data or "epic" not in data:
+        return jsonify({"error": "Отсутствует поле 'epic'"}), 400
+    
+    epic_text = data["epic"].strip()
+    
+    if len(epic_text) < 50:
+        return jsonify({"error": "Эпик слишком короткий (минимум 50 символов)"}), 400
+    
+    logger.info("=" * 60)
+    logger.info(f"🎤 Новый запрос на генерацию презентации")
+    logger.info(f"📝 Длина эпика: {len(epic_text)} символов")
+    logger.info("=" * 60)
+    
+    try:
+        # Генерация презентации
+        presentation = ai_client.generate_presentation(epic_text, SYSTEM_PROMPT_PRESENTATION)
+        
+        if not presentation:
+            logger.error("❌ Не удалось сгенерировать презентацию")
+            return jsonify({"error": "Ошибка генерации презентации. Проверь консоль сервера для деталей."}), 500
+        
+        # Парсим слайды для удобного отображения
+        slides = _parse_presentation_to_slides(presentation)
+        
+        logger.info(f"✅ Сгенерировано {len(slides)} слайдов")
+        logger.info("✅ Отправляю презентацию пользователю")
+        
+        return jsonify({
+            "success": True,
+            "presentation": presentation,
+            "slides": slides
+        })
+        
+    except Exception as e:
+        logger.exception(f"❌ Ошибка при генерации презентации: {e}")
+        return jsonify({"error": f"Ошибка генерации: {str(e)}"}), 500
+
+def _parse_presentation_to_slides(presentation_text: str):
+    """Парсит текст презентации на отдельные слайды"""
+    slides = []
+    lines = presentation_text.split('\n')
+    current_slide = None
+    
+    for line in lines:
+        line = line.strip()
+        
+        # Обнаружение начала нового слайда
+        if line.startswith('Слайд ') and ':' in line:
+            if current_slide:
+                slides.append(current_slide)
+            
+            # Извлекаем номер и заголовок
+            slide_header = line.split(':', 1)
+            slide_number = slide_header[0].replace('Слайд ', '').strip()
+            slide_title = slide_header[1].strip() if len(slide_header) > 1 else ''
+            
+            current_slide = {
+                "number": slide_number,
+                "title": slide_title,
+                "content": []
+            }
+        elif current_slide and line:
+            # Добавляем контент к текущему слайду
+            current_slide["content"].append(line)
+    
+    # Добавляем последний слайд
+    if current_slide:
+        slides.append(current_slide)
+    
+    return slides
+
 @app.route("/api/health")
 def health():
     """Проверка здоровья сервиса"""
@@ -137,28 +288,10 @@ def cleanup():
     ai_client.close()
 
 if __name__ == "__main__":
-<<<<<<< HEAD
     print(get_startup_message())
-    
     try:
         app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)
     except KeyboardInterrupt:
         print("\n🛑 Останавливаю сервер...")
     finally:
         cleanup()
-=======
-    # ВАЖНО: Используем порт из переменной окружения Render
-    port = int(os.environ.get('PORT', 5000))
-    
-    print("\n" + "=" * 60)
-    print("🤖 ShezGard Bot — Веб-интерфейс")
-    print("=" * 60)
-    print(f"📍 Слушаю на: http://0.0.0.0:{port}")
-    print(f"🧠 Модель: {ai_client.model}")
-    print(f"📊 Поддержка вложенных тематик: ВКЛЮЧЕНА")
-    print(f"📦 Макс. размер файла: 100 МБ")
-    print("=" * 60 + "\n")
-    
-    # ЗАПУСК НА 0.0.0.0 + ПОРТ ИЗ ОКРУЖЕНИЯ (обязательно для Render!)
-    app.run(host='0.0.0.0', port=port, debug=False)
->>>>>>> 3636a056258fbe65f6181c86705848d39aa5d548

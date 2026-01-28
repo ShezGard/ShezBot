@@ -1,0 +1,198 @@
+/* ==================== Стили для сравнения периодов ==================== */
+#period-comparison .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#period-comparison .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(157, 78, 221, 0.25);
+}
+
+#compare-btn {
+    background: var(--accent-gradient);
+    border: none;
+    padding: 1rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(157, 78, 221, 0.4);
+}
+
+#compare-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(157, 78, 221, 0.6);
+    background: linear-gradient(135deg, var(--accent-hover), var(--accent-dark));
+}
+
+#compare-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    background: var(--bg-tertiary);
+    color: var(--text-disabled);
+}
+
+.upload-area.cursor-pointer {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-area.cursor-pointer:hover {
+    border-color: var(--accent-color) !important;
+    background-color: rgba(157, 78, 221, 0.1) !important;
+    transform: scale(1.02);
+}
+
+.upload-area.cursor-pointer i {
+    transition: all 0.3s ease;
+}
+
+.upload-area.cursor-pointer:hover i {
+    color: var(--accent-color);
+    transform: scale(1.2);
+}
+
+#file-name-1, #file-name-2 {
+    font-size: 0.85rem;
+    font-weight: 500;
+    min-height: 1.5rem;
+    color: var(--text-muted);
+}
+
+#file-name-1.has-file, #file-name-2.has-file {
+    color: var(--accent-color);
+}
+
+/* Стили для результатов сравнения */
+.comparison-header {
+    background: rgba(157, 78, 221, 0.12);
+    border-left: 4px solid var(--accent-color);
+    padding: 1.2rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
+}
+
+.comparison-header h4 {
+    margin-bottom: 0.5rem;
+    color: var(--accent-color);
+    font-weight: 700;
+}
+
+.comparison-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.summary-card {
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--accent-color);
+}
+
+.summary-card .metric-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent-color);
+    display: block;
+    margin: 0.5rem 0;
+}
+
+.summary-card .metric-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    display: block;
+}
+
+.summary-card.trend-up {
+    border-color: var(--success);
+}
+
+.summary-card.trend-up .metric-value {
+    color: var(--success);
+}
+
+.summary-card.trend-down {
+    border-color: var(--danger);
+}
+
+.summary-card.trend-down .metric-value {
+    color: var(--danger);
+}
+
+.trend-icon.up {
+    color: var(--success);
+    font-weight: bold;
+}
+
+.trend-icon.down {
+    color: var(--danger);
+    font-weight: bold;
+}
+
+/* Стили для таблиц сравнения */
+.comparison-table thead th {
+    background: var(--bg-tertiary);
+    border-bottom: 2px solid var(--accent-color);
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.comparison-table tbody tr {
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s;
+}
+
+.comparison-table tbody tr:hover {
+    background-color: rgba(157, 78, 221, 0.12);
+}
+
+.trend-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.trend-badge.up {
+    background: rgba(82, 196, 26, 0.15);
+    color: var(--success);
+    border: 1px solid var(--success);
+}
+
+.trend-badge.down {
+    background: rgba(255, 77, 79, 0.15);
+    color: var(--danger);
+    border: 1px solid var(--danger);
+}
+
+.trend-badge.same {
+    background: rgba(250, 173, 20, 0.15);
+    color: var(--warning);
+    border: 1px solid var(--warning);
+}
+
+/* Стили для новых/исчезнувших категорий */
+.category-badge.new {
+    background: rgba(82, 196, 26, 0.15);
+    color: var(--success);
+    border: 1px solid var(--success);
+}
+
+.category-badge.disappeared {
+    background: rgba(255, 77, 79, 0.15);
+    color: var(--danger);
+    border: 1px solid var(--danger);
+}

@@ -1,0 +1,94 @@
+/* ==================== Вспомогательные стили ==================== */
+.loading {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.copy-btn {
+    margin-top: 0.8rem;
+    font-size: 0.85rem;
+    background: rgba(157, 78, 221, 0.15);
+    color: var(--accent-color);
+    border: 1.5px solid var(--accent-color);
+    border-radius: 12px;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(157, 78, 221, 0.15);
+}
+
+.copy-btn:hover {
+    background: var(--accent-gradient);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px var(--accent-glow);
+    border-color: transparent;
+}
+
+.copy-btn:active {
+    transform: translateY(0);
+}
+
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+}
+
+.error-message {
+    background: var(--danger-bg);
+    color: var(--danger);
+    border-left: 4px solid var(--danger);
+    padding: 1rem;
+    border-radius: 0 12px 12px 0;
+    margin-top: 0.5rem;
+    border: 2px solid var(--danger);
+    box-shadow: 0 2px 10px rgba(255, 77, 79, 0.15);
+}
+
+.typing-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    margin: 0 2px;
+    animation: typing 1.4s infinite both;
+    box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.typing-indicator:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-indicator:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0%, 100% {
+        transform: translateY(0) scale(0.8);
+        opacity: 0.5;
+    }
+    50% {
+        transform: translateY(-8px) scale(1);
+        opacity: 1;
+    }
+}

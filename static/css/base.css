@@ -1,0 +1,256 @@
+/* ==================== Цветовые переменные ==================== */
+:root {
+    /* Основная тёмная палитра */
+    --bg-primary: #0f0f16;
+    --bg-secondary: #1a1a26;
+    --bg-tertiary: #222233;
+    --bg-card: #2a2a3a;
+    --bg-hover: #353548;
+    
+    /* Текст — ВСЁ БЕЛОЕ! */
+    --text-primary: #ffffff;
+    --text-secondary: #e0e0ff;
+    --text-muted: #c0c0e0;
+    --text-disabled: #9090b0;
+    
+    /* Цвета интерфейса */
+    --border-color: #40405a;
+    --border-light: #50506a;
+    --border-dark: #151520;
+    
+    /* Акцентные цвета — ФИОЛЕТОВЫЕ! */
+    --accent-color: #9d4edd;        /* Основной фиолетовый */
+    --accent-light: #b57edc;        /* Светлее фиолетовый */
+    --accent-dark: #7b2cbf;         /* Тёмный фиолетовый */
+    --accent-hover: #a75fd9;        /* Фиолетовый при наведении */
+    --accent-active: #8a2be2;       /* Фиолетовый при активации */
+    --accent-glow: rgba(157, 78, 221, 0.4);
+    --accent-gradient: linear-gradient(135deg, #9d4edd, #7b2cbf);
+    
+    /* Статусы */
+    --success: #52c41a;
+    --success-bg: #1a2a1a;
+    --warning: #faad14;
+    --warning-bg: #2a251a;
+    --danger: #ff4d4f;
+    --danger-bg: #2a1a1a;
+    --info: #1890ff;
+    --info-bg: #1a252a;
+    
+    /* Боковое меню */
+    --sidebar-bg: #151522;
+    --sidebar-border: #282838;
+    --sidebar-hover: #222232;
+    --sidebar-active: #2a2a3a;
+    
+    /* Размеры */
+    --sidebar-width: 260px;
+    --border-radius: 12px;
+    --border-radius-lg: 16px;
+    --border-radius-xl: 20px;
+    
+    /* Тени */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+    --shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.7);
+}
+
+/* ==================== Глобальные стили ==================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.container-fluid {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+a:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+}
+
+/* ==================== Стили скроллбара ==================== */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--accent-color);
+    border-radius: 10px;
+    border: 2px solid var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--accent-hover);
+}
+
+/* ==================== Универсальные стили текста ==================== */
+h1, h2, h3, h4, h5, h6, p, span, div, label, small, strong, em, b, i {
+    color: var(--text-primary) !important;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+.text-disabled {
+    color: var(--text-disabled) !important;
+}
+
+/* Формы */
+input, textarea, select, button {
+    color: var(--text-primary) !important;
+}
+
+input::placeholder, textarea::placeholder {
+    color: var(--text-muted) !important;
+    opacity: 0.8 !important;
+}
+
+.form-label {
+    color: var(--text-primary) !important;
+    font-weight: 500;
+}
+
+.form-control {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.form-control:focus {
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 0.2rem var(--accent-glow) !important;
+}
+
+.form-select {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='white' d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3e%3c/svg%3e") !important;
+}
+
+/* Таблицы */
+.table {
+    color: var(--text-primary) !important;
+}
+
+.table thead th {
+    color: var(--text-primary) !important;
+    border-bottom: 2px solid var(--border-light) !important;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(157, 78, 221, 0.1) !important;
+}
+
+/* Карточки */
+.card {
+    background-color: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Алерты */
+.alert {
+    color: var(--text-primary) !important;
+    border-width: 2px !important;
+}
+
+.alert-success {
+    background-color: var(--success-bg) !important;
+    border-color: var(--success) !important;
+}
+
+.alert-warning {
+    background-color: var(--warning-bg) !important;
+    border-color: var(--warning) !important;
+}
+
+.alert-danger {
+    background-color: var(--danger-bg) !important;
+    border-color: var(--danger) !important;
+}
+
+.alert-info {
+    background-color: var(--info-bg) !important;
+    border-color: var(--info) !important;
+}
+
+/* Прогресс */
+.progress {
+    background-color: var(--bg-tertiary) !important;
+    border-radius: 4px !important;
+}
+
+.progress-bar {
+    background: var(--accent-gradient) !important;
+}
+
+/* Кнопки */
+.btn {
+    color: white !important;
+    border: none !important;
+}
+
+.btn-primary {
+    background: var(--accent-gradient) !important;
+    box-shadow: 0 4px 15px rgba(157, 78, 221, 0.4) !important;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--accent-hover), var(--accent-dark)) !important;
+    box-shadow: 0 6px 20px rgba(157, 78, 221, 0.6) !important;
+    transform: translateY(-2px) !important;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--success), #49a908) !important;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #49a908, var(--success)) !important;
+}
+
+.btn-secondary {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.btn-secondary:hover {
+    background-color: var(--bg-hover) !important;
+    border-color: var(--accent-color) !important;
+}

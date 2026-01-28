@@ -9,7 +9,6 @@ logger = logging.getLogger(__name__)
 def analyze_csv(df: pd.DataFrame) -> Dict[str, Any]:
     """
     Анализирует CSV файл и возвращает структурированные результаты
-    
     Возвращает:
         - Статистику по категориям (уровни 1 и 2)
         - Тренды по времени
@@ -54,6 +53,8 @@ def analyze_csv(df: pd.DataFrame) -> Dict[str, Any]:
             "total_rows": len(df),
             "columns": list(df.columns)
         }
+
+# ... остальной код анализатора без изменений ...
 
 def _find_category_column(df: pd.DataFrame) -> str | None:
     """Находит колонку с тематиками (где есть "/" в значениях)"""
@@ -193,13 +194,13 @@ def _generate_insights(result: Dict) -> None:
 def format_data_summary(analysis: Dict) -> str:
     """Форматирует сводку данных для передачи в AI"""
     summary = f"""
-## 📊 ОБЩАЯ СТАТИСТИКА
-- Всего обращений: {analysis.get('total_rows', 0)}
-- Уникальных категорий: {analysis['summary'].get('unique_categories', 0)}
-- Период анализа: {analysis['summary'].get('date_range', {}).get('start', 'N/A')} — {analysis['summary'].get('date_range', {}).get('end', 'N/A')} ({analysis['summary'].get('date_range', {}).get('days', 0)} дней)
-- Среднее обращений в день: {analysis['summary'].get('date_range', {}).get('days', 0) and round(analysis.get('total_rows', 0) / analysis['summary']['date_range']['days'], 1) or 'N/A'}
+📊 ОБЩАЯ СТАТИСТИКА
+Всего обращений: {analysis.get('total_rows', 0)}
+Уникальных категорий: {analysis['summary'].get('unique_categories', 0)}
+Период анализа: {analysis['summary'].get('date_range', {}).get('start', 'N/A')} — {analysis['summary'].get('date_range', {}).get('end', 'N/A')} ({analysis['summary'].get('date_range', {}).get('days', 0)} дней)
+Среднее обращений в день: {analysis['summary'].get('date_range', {}).get('days', 0) and round(analysis.get('total_rows', 0) / analysis['summary']['date_range']['days'], 1) or 'N/A'}
 
-## 🏆 ТОП-10 КАТЕГОРИЙ (Уровень 1 — основные направления)
+🏆 ТОП-10 КАТЕГОРИЙ (Уровень 1 — основные направления)
 """
     
     for i, cat in enumerate(analysis.get('top_categories_level_1', []), 1):
@@ -224,11 +225,157 @@ def format_data_summary(analysis: Dict) -> str:
             summary += f"- {insight['message']}\n"
     
     summary += f"""
-## 💡 КОНТЕКСТ ДЛЯ АНАЛИТИКА:
-- Это данные техподдержки по интеграции iiko с ЕГАИС и системой маркировки
-- Основные компоненты: ServiceApp, УТМ, плагины для iikoFront
-- Бизнес-воздействие: простои касс, потеря выручки, недовольство клиентов
-- Цель анализа: выявить системные проблемы и предложить конкретные эпики для решения
+💡 КОНТЕКСТ ДЛЯ АНАЛИТИКА:
+Это данные техподдержки по интеграции iiko с ЕГАИС и системой маркировки
+Основные компоненты: ServiceApp, УТМ, плагины для iikoFront
+Бизнес-воздействие: простои касс, потеря выручки, недовольство клиентов
+Цель анализа: выявить системные проблемы и предложить конкретные эпики для решения
+"""
+    return summary
+
+# ==================== НОВЫЕ ФУНКЦИИ: Сравнение периодов ====================
+
+def compare_periods(analysis1: Dict, analysis2: Dict) -> Dict[str, Any]:
+    """
+    Сравнивает два периода и возвращает структурированные различия
+    """
+    try:
+        logger.info("🔄 Сравнение периодов...")
+        
+        comparison = {
+            "summary": {
+                "period1_total": analysis1.get("total_rows", 0),
+                "period2_total": analysis2.get("total_rows", 0),
+                "total_change": 0,
+                "total_change_percent": 0.0,
+                "period1_unique": analysis1["summary"].get("unique_categories", 0),
+                "period2_unique": analysis2["summary"].get("unique_categories", 0),
+                "unique_change": 0,
+                "unique_change_percent": 0.0
+            },
+            "category_changes": [],
+            "new_categories": [],
+            "disappeared_categories": [],
+            "top_growers": [],
+            "top_decliners": []
+        }
+        
+        # Общее изменение
+        total1 = analysis1.get("total_rows", 0)
+        total2 = analysis2.get("total_rows", 0)
+        
+        if total1 > 0:
+            comparison["summary"]["total_change"] = total2 - total1
+            comparison["summary"]["total_change_percent"] = round((total2 - total1) / total1 * 100, 1)
+        
+        # Изменение уникальных категорий
+        unique1 = analysis1["summary"].get("unique_categories", 0)
+        unique2 = analysis2["summary"].get("unique_categories", 0)
+        
+        comparison["summary"]["unique_change"] = unique2 - unique1
+        if unique1 > 0:
+            comparison["summary"]["unique_change_percent"] = round((unique2 - unique1) / unique1 * 100, 1)
+        
+        # Сравнение категорий уровня 1
+        cats1_dict = {cat["name"]: cat for cat in analysis1.get("top_categories_level_1", [])}
+        cats2_dict = {cat["name"]: cat for cat in analysis2.get("top_categories_level_1", [])}
+        
+        all_category_names = set(cats1_dict.keys()) | set(cats2_dict.keys())
+        
+        for cat_name in all_category_names:
+            cat1 = cats1_dict.get(cat_name)
+            cat2 = cats2_dict.get(cat_name)
+            
+            if cat1 and cat2:
+                # Категория есть в обоих периодах
+                change = cat2["count"] - cat1["count"]
+                change_percent = round((cat2["count"] - cat1["count"]) / cat1["count"] * 100, 1) if cat1["count"] > 0 else 0
+                
+                comparison["category_changes"].append({
+                    "name": cat_name,
+                    "period1_count": cat1["count"],
+                    "period2_count": cat2["count"],
+                    "change": change,
+                    "change_percent": change_percent,
+                    "period1_percent": cat1["percent"],
+                    "period2_percent": cat2["percent"],
+                    "trend": "up" if change > 0 else "down" if change < 0 else "same"
+                })
+            elif cat1 and not cat2:
+                # Категория исчезла
+                comparison["disappeared_categories"].append({
+                    "name": cat_name,
+                    "period1_count": cat1["count"],
+                    "period1_percent": cat1["percent"]
+                })
+            elif not cat1 and cat2:
+                # Новая категория
+                comparison["new_categories"].append({
+                    "name": cat_name,
+                    "period2_count": cat2["count"],
+                    "period2_percent": cat2["percent"]
+                })
+        
+        # ТОП-5 роста
+        comparison["top_growers"] = sorted(
+            [c for c in comparison["category_changes"] if c["trend"] == "up"],
+            key=lambda x: x["change_percent"],
+            reverse=True
+        )[:5]
+        
+        # ТОП-5 падения
+        comparison["top_decliners"] = sorted(
+            [c for c in comparison["category_changes"] if c["trend"] == "down"],
+            key=lambda x: x["change_percent"]
+        )[:5]
+        
+        logger.info("✅ Сравнение периодов завершено")
+        return comparison
+        
+    except Exception as e:
+        logger.exception(f"❌ Ошибка при сравнении периодов: {e}")
+        return {"error": str(e)}
+
+def format_comparison_summary(comparison: Dict, analysis1: Dict, analysis2: Dict) -> str:
+    """Форматирует сводку сравнения для передачи в AI"""
+    summary = f"""
+📊 СРАВНЕНИЕ ПЕРИОДОВ
+
+📈 ОБЩАЯ ДИНАМИКА
+Обращений в периоде 1: {comparison['summary']['period1_total']}
+Обращений в периоде 2: {comparison['summary']['period2_total']}
+Изменение: {comparison['summary']['total_change']} ({comparison['summary']['total_change_percent']}%)
+Уникальных категорий в периоде 1: {comparison['summary']['period1_unique']}
+Уникальных категорий в периоде 2: {comparison['summary']['period2_unique']}
+Изменение категорий: {comparison['summary']['unique_change']} ({comparison['summary']['unique_change_percent']}%)
+
+🏆 ТОП-5 КАТЕГОРИЙ С НАИБОЛЬШИМ РОСТОМ
 """
     
+    for i, cat in enumerate(comparison.get("top_growers", []), 1):
+        trend = "↗️" if cat["change_percent"] > 0 else "↘️"
+        summary += f"{i}. **{cat['name']}** — {cat['period1_count']} → {cat['period2_count']} ({cat['change']} / {cat['change_percent']}%) {trend}\n"
+    
+    summary += f"\n📉 ТОП-5 КАТЕГОРИЙ С НАИБОЛЬШИМ ПАДЕНИЕМ\n"
+    
+    for i, cat in enumerate(comparison.get("top_decliners", []), 1):
+        trend = "↗️" if cat["change_percent"] > 0 else "↘️"
+        summary += f"{i}. **{cat['name']}** — {cat['period1_count']} → {cat['period2_count']} ({cat['change']} / {cat['change_percent']}%) {trend}\n"
+    
+    if comparison.get("new_categories"):
+        summary += f"\n🆕 НОВЫЕ КАТЕГОРИИ (появились во 2 периоде)\n"
+        for cat in comparison["new_categories"]:
+            summary += f"- **{cat['name']}** — {cat['period2_count']} обращений ({cat['period2_percent']}%)\n"
+    
+    if comparison.get("disappeared_categories"):
+        summary += f"\n❌ ИСЧЕЗНУВШИЕ КАТЕГОРИИ (были в 1 периоде, нет во 2)\n"
+        for cat in comparison["disappeared_categories"]:
+            summary += f"- **{cat['name']}** — было {cat['period1_count']} обращений ({cat['period1_percent']}%)\n"
+    
+    summary += f"""
+💡 КОНТЕКСТ ДЛЯ АНАЛИТИКА:
+Это сравнение данных техподдержки по интеграции iiko с ЕГАИС и системой маркировки
+Период 1 → Период 2: что изменилось, какие проблемы усилились/ослабли
+Цель анализа: выявить тренды, новые проблемы и успехи команды
+"""
     return summary

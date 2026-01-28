@@ -1,0 +1,97 @@
+/* ==================== Стили для анализа данных ==================== */
+.data-analysis-section h3 {
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--text-primary);
+}
+
+.upload-area {
+    background: var(--bg-secondary);
+    transition: all 0.3s ease;
+    border: 2px dashed var(--border-color);
+    border-radius: 16px;
+}
+
+.upload-area:hover {
+    border-color: var(--accent-color) !important;
+    background-color: rgba(157, 78, 221, 0.1) !important;
+    transform: scale(1.02);
+}
+
+.upload-area:hover h5 {
+    color: var(--accent-color);
+}
+
+.card.bg-dark {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color);
+}
+
+.table-dark {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.table-dark thead th {
+    border-bottom: 2px solid var(--border-light);
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.table-dark tbody tr {
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.table-dark tbody tr:hover {
+    background-color: rgba(157, 78, 221, 0.12);
+    color: var(--text-primary);
+}
+
+.progress {
+    border-radius: 3px;
+    overflow: hidden;
+    background-color: var(--bg-tertiary);
+}
+
+.progress-bar {
+    background: var(--accent-gradient);
+}
+
+.alert.bg-dark {
+    background-color: var(--bg-card) !important;
+    border-width: 2px;
+    color: var(--text-primary);
+}
+
+.text-info {
+    color: var(--info) !important;
+}
+
+.text-warning {
+    color: var(--warning) !important;
+}
+
+.text-danger {
+    color: var(--danger) !important;
+}
+
+.text-success {
+    color: var(--success) !important;
+}
+
+.border-info {
+    border-color: var(--info) !important;
+}
+
+.border-warning {
+    border-color: var(--warning) !important;
+}
+
+.border-danger {
+    border-color: var(--danger) !important;
+}
+
+.border-success {
+    border-color: var(--success) !important;
+}

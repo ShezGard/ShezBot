@@ -1,0 +1,97 @@
+/* ==================== Мобильная адаптация ==================== */
+@media (max-width: 992px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    
+    .sidebar.show {
+        transform: translateX(0);
+    }
+    
+    main {
+        margin-left: 0;
+    }
+    
+    .comparison-summary {
+        grid-template-columns: 1fr;
+    }
+    
+    .chat-messages {
+        height: auto;
+        min-height: 400px;
+    }
+    
+    .message {
+        max-width: 95%;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 220px;
+    }
+    
+    main {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+    
+    .chat-container {
+        margin: 0 1rem;
+    }
+    
+    .chat-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .nav-link {
+        font-size: 0.9rem;
+        padding: 0.8rem 0.8rem;
+    }
+    
+    .sidebar-title {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .sidebar {
+        width: 200px;
+    }
+    
+    .nav-link span {
+        display: none;
+    }
+    
+    .nav-link i {
+        margin: 0;
+    }
+    
+    .chat-container {
+        margin: 0 0.5rem;
+    }
+    
+    .chat-header {
+        padding: 1.2rem;
+    }
+    
+    .chat-header h1 {
+        font-size: 1.3rem;
+    }
+    
+    .chat-messages {
+        padding: 1rem;
+    }
+    
+    .message-content {
+        padding: 1rem 1.2rem;
+    }
+    
+    #user-input {
+        font-size: 0.95rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.85rem;
+    }
+}
