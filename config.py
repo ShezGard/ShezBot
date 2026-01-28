@@ -31,7 +31,7 @@ class Config:
 
     # Настройки анализа данных
     MAX_FILE_SIZE = 100 * 1024 * 1024  # 100 МБ
-    CRITICAL_PERCENT_THRESHOLD = 40  # Процент для критических категорий
+    CRITICAL_PERCENT_THRESHOLD = 40  # ← ИСПРАВЛЕНО: убран пробел
 
     # Заголовки для запросов к OpenRouter
     @property
