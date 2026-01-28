@@ -137,6 +137,7 @@ def cleanup():
     ai_client.close()
 
 if __name__ == "__main__":
+<<<<<<< HEAD
     print(get_startup_message())
     
     try:
@@ -145,3 +146,19 @@ if __name__ == "__main__":
         print("\n🛑 Останавливаю сервер...")
     finally:
         cleanup()
+=======
+    # ВАЖНО: Используем порт из переменной окружения Render
+    port = int(os.environ.get('PORT', 5000))
+    
+    print("\n" + "=" * 60)
+    print("🤖 ShezGard Bot — Веб-интерфейс")
+    print("=" * 60)
+    print(f"📍 Слушаю на: http://0.0.0.0:{port}")
+    print(f"🧠 Модель: {ai_client.model}")
+    print(f"📊 Поддержка вложенных тематик: ВКЛЮЧЕНА")
+    print(f"📦 Макс. размер файла: 100 МБ")
+    print("=" * 60 + "\n")
+    
+    # ЗАПУСК НА 0.0.0.0 + ПОРТ ИЗ ОКРУЖЕНИЯ (обязательно для Render!)
+    app.run(host='0.0.0.0', port=port, debug=False)
+>>>>>>> 3636a056258fbe65f6181c86705848d39aa5d548
