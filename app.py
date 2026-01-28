@@ -4,14 +4,14 @@ import pandas as pd
 from config import config
 from ai_client import AIClient
 from data_analyzer import (
-    analyze_csv, 
-    format_data_summary, 
-    compare_periods, 
+    analyze_csv,
+    format_data_summary,
+    compare_periods,
 )
 from utils import get_startup_message, validate_description, validate_file_size, logger
 from prompts import (
-    SYSTEM_PROMPT_EPIC, 
-    SYSTEM_PROMPT_ANALYSIS, 
+    SYSTEM_PROMPT_EPIC,
+    SYSTEM_PROMPT_ANALYSIS,
     SYSTEM_PROMPT_COMPARISON,
     SYSTEM_PROMPT_PRESENTATION
 )
@@ -289,8 +289,13 @@ def cleanup():
 
 if __name__ == "__main__":
     print(get_startup_message())
+    
+    # Render требует привязки к 0.0.0.0 и порту из переменной окружения
+    host = '0.0.0.0'
+    port = int(config.PORT)
+    
     try:
-        app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)
+        app.run(host=host, port=port, debug=config.DEBUG)
     except KeyboardInterrupt:
         print("\n🛑 Останавливаю сервер...")
     finally:
